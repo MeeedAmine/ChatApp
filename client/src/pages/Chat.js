@@ -1,10 +1,18 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import Typography from '@material-ui/core/Typography'
 import { Container, Tabs, Tab, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
 import OnlineUser from '../components/OnlineUser';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from '@material-ui/core/Icon';
+
+
+import io from "socket.io-client";
+import queryString from "query-string";
+import { useLocation } from 'react-router-dom';
+import Message from '../components/Message';
+let socket;
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -51,7 +59,8 @@ const useStyles = makeStyles((theme) => ({
        backgroundColor: "#fff",
        borderRadius: "30px",
        maxHeight: "500px", //TODO change it to the right max after testing displaying many messages
-       overflowY: "scroll"
+       overflowY: "scroll",
+
      },
      inputWrapper:{
        gridArea: "3 / 2 / 4 / 4",
@@ -67,16 +76,75 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function Chat() {
-    const classes = useStyles();
-    const [value, setValue] = useState(0);
+    const END_POINT = "http://localhost:5000/";
+    const location = useLocation();
+    const [username, setUsername] = useState("");
+    const [room, setRoom] = useState("");
+    const [users, setUsers] = useState([]);
+    const [messages, setMessages] = useState([]);
+    const [message, setMessage] = useState("");
+    
+    useEffect(() => {
+      const {username, room} = queryString.parse(location.search);
+      
+      setUsername(username);
+      setRoom(room);
+      console.log(username, room);
+
+      socket = io(END_POINT);
+      // Join chatroom
+      socket.emit('joinRoom', {username, room});
+
+      
+    }, [END_POINT, location.search]);
+
+    useEffect(() => {
+      socket.on("message", msg => {
+        setMessages(messages => ([...messages, msg]));
+      });
+      // Get room and users 
+      socket.on("roomUsers", ({ room, users}) => {
+        setUsers(users);
+        setRoom(room);
+      });
+      
+    }, []);
+
+  // handling scrolling to bottom of the chat window
+  const DummyDiv = () => {
+    const divRef = useRef(null);
+  
+    useEffect(() => {
+      divRef.current.scrollIntoView({ behavior: 'smooth' });
+    });
+  
+    return <div ref={divRef} />;
+  }
+    
+  const classes = useStyles();
+  const [value, setValue] = useState(0);
+
     const handleChange = (event, newValue) => {
     setValue(newValue);
-    };
+    }
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if(message){
+          socket.emit("chatMessage", message);
+          setMessage("");
+          e.target.value = "";
+      }
+    }
+    const handleMessage = (e) => {
+      const newMessage = e.target.value;
+      setMessage(newMessage);
+    }
     return (
-        <Container fluid className={classes.container}>
+        <Container className={classes.container}>
         <div className={classes.chatInfo}>
           <Typography variant="h3">
-            Rooms
+            {room}
           </Typography>
           <div className={classes.root}>
             <Tabs
@@ -96,32 +164,39 @@ export default function Chat() {
           </div>
           <Typography variant="h4">Online Users</Typography>
           <div className={classes.users}>
-            <OnlineUser />
-            <OnlineUser />
-            <OnlineUser />
-            <OnlineUser />
-            <OnlineUser />
+            {users && users.map(user => ( <OnlineUser username={user.username} key={user.id} /> ))}
           </div>
         </div>
         <div className={classes.chatWindow}>
-          
+        {
+          messages.map((msg) => (
+            <Message message={msg} sender={username} key={msg.id}/>
+          ))
+        }
+        {/* scroll to bottom of the window when entering a message */}
+        <DummyDiv />
         </div>
         <div className={classes.inputWrapper}>
-          <form noValidate autoComplete="off">
+          <form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <TextField 
+          id="message"
+          value={message}
           label="Type a message"
           variant="outlined"
           color="primary"
           className={classes.inputField}
+          onChange={handleMessage}
           />
-          </form>
+
           <Button
+            type="submit"
             variant="contained"
             color="primary"
             endIcon={<Icon>send</Icon>}
           >
           Send
           </Button>
+          </form>
         </div>
       </Container>
     )

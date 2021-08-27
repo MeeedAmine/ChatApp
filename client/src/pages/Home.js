@@ -2,19 +2,45 @@ import React from 'react'
 import TextField from "@material-ui/core/TextField"
 import InputAdornment from '@material-ui/core/InputAdornment';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import { Container, FormControl, FormHelperText, InputLabel, NativeSelect } from '@material-ui/core';
+import { Container, FormControl, FormHelperText, InputLabel, NativeSelect, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import { useHistory } from 'react-router';
+import ForumIcon from '@material-ui/icons/Forum';
+import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
-    formControl: {
+    form: {
       margin: theme.spacing(1),
-      minWidth: 120,
-      width: 200
+      alignItems: "center",
+      textAlign: "center",
+      marginTop: "40px"
     },
+    container: {
+        maxWidth: "500px",
+        height: "400px",
+        background: "#f9f9f9",
+        margin: "80px auto",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center"
+    },
+    title: {
+        marginTop: "35px"
+    },
+    username: {
+        display: "flex",
+        marginTop: "15px"
+    },
+    room: {
+        display: "flex",
+        marginTop: "15px"
+    },
+    btn: {
+        marginTop: "15px"
+    }
   }));
 
 export default function Home() {
@@ -35,16 +61,22 @@ export default function Home() {
         if(username === ""){
             setUsernameError(true);
         }
-        if(room === ''){
-            setRoomError(true)
+        if(room === ""){
+            setRoomError(true);
         }
         if(username && room){
             history.push(`/chat?username=${username}&room=${room}`)
         }
     }
     return (
-        <Container>
-            <form novalidate autoComplete="off" onSubmit={handleSubmit}>
+        <Container className={classes.container}>
+            <Typography
+            variant="h6"
+            className={classes.title}
+            >
+                Join a room and chat
+            </Typography>
+            <form className={classes.form} noValidate autoComplete="off" onSubmit={handleSubmit}>
                 <TextField
                     id="username"
                     label="Username"
@@ -58,25 +90,42 @@ export default function Home() {
                     }}
                     required
                     error={usernameError}
+                    className={classes.username}
                 />
-                <FormControl required className={classes.formControl}>
+                <TextField
+                    id="room"
+                    label="Room or ID"
+                    onChange={(e) => setRoom(e.target.value)}
+                    InputProps={{
+                    startAdornment: (
+                    <InputAdornment position="start">
+                        <ForumIcon />
+                    </InputAdornment>
+                    ),
+                    }}
+                    error={roomError}
+                    required
+                    className={classes.room}
+                />
+                {/* <FormControl required className={classes.formControl}>
                     <InputLabel htmlFor="room">Rooms</InputLabel>
                     <NativeSelect
                     value={room}
                     onChange={handleRoom}
                     >
                     <option aria-label="None" value="" />
-                    <option value={"python"}>Python</option>
-                    <option value={"javascript"}>Javascript</option>
-                    <option value={"chess"}>Chess</option>
+                    <option value={"Python"}>Python</option>
+                    <option value={"Javascript"}>Javascript</option>
+                    <option value={"Chess"}>Chess</option>
                     </NativeSelect>
                 <FormHelperText>Choose a room to join</FormHelperText>
-                </FormControl>
+                </FormControl> */}
                 <Button 
                 type="submit" 
                 variant="contained" 
                 color="primary"
                 endIcon={<ArrowForwardIosIcon />}
+                className={classes.btn}
                 >
                 Join
                 </Button>

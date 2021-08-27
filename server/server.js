@@ -1,22 +1,37 @@
 const express = require("express");
 const http = require("http");
 const socketio = require("socket.io");
-const cors = require("cors");
-
+const cors = require('cors');
+const router = require("./router");
 const formatMessage = require('./utils/messages');
 const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users');
 
-app.use(cors());
+
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server);
+app.use(cors());
+
+app.use(router)
+
+
+
+
+const io = socketio(server, {
+    cors: {
+      origin: "http://localhost:3000",
+      methods: ["GET", "POST"]
+    }
+  });;
+
+
 
 const botName = 'ChatApp Bot'; 
 
 io.on('connection', socket => {
     socket.on('joinRoom', ({username, room})=>{
         const user = userJoin(socket.id, username, room);
+        console.log(user);
         socket.join(user.room);
         // welcome current user
         socket.emit('message', formatMessage(botName,`Welcome ${user.username} to ChatApp!`));
@@ -52,4 +67,4 @@ io.on('connection', socket => {
         
     });
 });
-server.listen(9000, ()=> console.log('Server runnig on port 9000'));
+server.listen(5000, ()=> console.log('Server runnig on port 5000'));
