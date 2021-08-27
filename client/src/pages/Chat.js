@@ -5,11 +5,11 @@ import { makeStyles } from '@material-ui/core';
 import OnlineUser from '../components/OnlineUser';
 import { useState, useEffect } from 'react';
 import Icon from '@material-ui/core/Icon';
-
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import io from "socket.io-client";
 import queryString from "query-string";
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import Message from '../components/Message';
 let socket;
 
@@ -38,12 +38,25 @@ const useStyles = makeStyles((theme) => ({
     },
     root: {
      flexGrow: 1,
-     backgroundColor: theme.palette.background.paper,
      display: 'flex',
+     flexDirection: "column",
      height: 180,
-     color: "black",
-     width: "60%",
-     marginLeft: "20px"
+     justifyContent: "center",
+     alignItems: "center",
+
+     },
+     room:{
+      borderRadius: 30,
+      display: 'inline-flex',
+      height: 40,
+      width: "80%",
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: "#3f5efb"
+     },
+     btn: {
+      marginTop: "10px",
+      display: "flex"
      },
      users: {
        overflowY: "scroll",
@@ -83,7 +96,8 @@ export default function Chat() {
     const [users, setUsers] = useState([]);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
-    
+    const classes = useStyles();
+
     useEffect(() => {
       const {username, room} = queryString.parse(location.search);
       
@@ -94,11 +108,10 @@ export default function Chat() {
       socket = io(END_POINT);
       // Join chatroom
       socket.emit('joinRoom', {username, room});
-
       
     }, [END_POINT, location.search]);
 
-    useEffect(() => {
+  useEffect(() => {
       socket.on("message", msg => {
         setMessages(messages => ([...messages, msg]));
       });
@@ -120,15 +133,11 @@ export default function Chat() {
   
     return <div ref={divRef} />;
   }
-    
-  const classes = useStyles();
-  const [value, setValue] = useState(0);
+  
+  
+  
 
-    const handleChange = (event, newValue) => {
-    setValue(newValue);
-    }
-
-    const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
       e.preventDefault();
       if(message){
           socket.emit("chatMessage", message);
@@ -144,23 +153,24 @@ export default function Chat() {
         <Container className={classes.container}>
         <div className={classes.chatInfo}>
           <Typography variant="h3">
-            {room}
+            Room
           </Typography>
           <div className={classes.root}>
-            <Tabs
-              orientation="vertical"
-              variant="scrollable"
-              value={value}
-              onChange={handleChange}
-              aria-label="Vertical tabs example"
-              className={classes.tabs}
-            >
-            <Tab label="Item One"  />
-            <Tab label="Item Two" />
-            <Tab label="Item Three" />
-            <Tab label="Item Four"  />
-            <Tab label="Item Five"  />
-          </Tabs>
+            
+          <Typography
+          variant="h4"
+          className={classes.room}>
+            {room}
+          </Typography>
+          <Button
+            className={classes.btn}
+            variant="contained"
+            color="secondary"
+            endIcon={<ExitToAppIcon />}
+            href="/"
+          >
+          Leave
+          </Button>
           </div>
           <Typography variant="h4">Online Users</Typography>
           <div className={classes.users}>
