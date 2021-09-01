@@ -25,11 +25,11 @@ const useStyles = makeStyles({
     username:{
         fontSize: "12px",
         borderRadius: "12px",
-        margin: "0px 2px",
+        margin: "0px 3px",
         
     },
     text:{
-        margin: "0px 2px"
+        margin: "0px 5px"
     },
     time:{
         margin: "0px 2px",

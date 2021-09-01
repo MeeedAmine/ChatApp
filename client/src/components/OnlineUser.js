@@ -18,15 +18,16 @@ function random(colors){
 
 const useStyles = makeStyles({
     container: {
-        background: "radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(70,252,164,1) 100%)",
+        background: "#00B2FF",
         borderRadius: 30,
         display: 'inline-flex',
         height: 40,
-        width: "90%"
+        width: "90%",
+        marginBottom: "2px"
     },
     avatar: {
         position: "relative" ,
-        background: random(["#3f5efb", "#46fca4", "#833ab4", "#fdbb2d"])
+        background: "#006AFF"
     },
     text:{
       display: 'inline-flex',

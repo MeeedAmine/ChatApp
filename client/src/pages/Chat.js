@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     container: {
      width: 1080,
      height: 700,
-     background: "linear-gradient(90deg, rgba(0,1,36,1) 0%, rgba(19,104,116,1) 48%, rgba(0,212,255,1) 95%)",
+     background: "#00B2FF",
      padding: "10px",
      margin: "30px 10%",
      display: "grid", 
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
       gridArea: "1 / 1 / 4 / 2",
       padding: "10px",
       margin: "30px",
-      background: "#9C77EA",
+      background: "#5C79FF",
       color: "#f9f9f9",
       height:"85%",
       borderRadius: 30
@@ -46,16 +46,17 @@ const useStyles = makeStyles((theme) => ({
 
      },
      room:{
-      borderRadius: 30,
+      borderRadius: 15,
       display: 'inline-flex',
       height: 40,
       width: "80%",
       alignItems: 'center',
       justifyContent: 'center',
-      background: "#3f5efb"
+      background: "#96a6c9"
      },
      btn: {
-      marginTop: "10px",
+      marginTop: "6px",
+      marginLeft: "2px",
       display: "flex"
      },
      users: {
@@ -82,7 +83,10 @@ const useStyles = makeStyles((theme) => ({
      },
      inputField:{
        width: "550px",
-     }
+     },
+     input: {
+      backgroundColor: "white"
+      }
    }));
 
 
@@ -196,6 +200,9 @@ export default function Chat() {
           color="primary"
           className={classes.inputField}
           onChange={handleMessage}
+          InputProps={{
+            className: classes.input,
+          }}
           />
 
           <Button
