@@ -18,12 +18,7 @@ app.use(router)
 
 
 
-const io = socketio(server, {
-    cors: {
-      origin: "http://chatappamine.netlify.app",
-      methods: ["GET", "POST"]
-    }
-  });;
+const io = socketio(server);
 
 
 
