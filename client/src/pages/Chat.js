@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import Typography from '@material-ui/core/Typography'
-import { Container, Tabs, Tab, TextField, Button } from '@material-ui/core';
+import { Container, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
 import OnlineUser from '../components/OnlineUser';
 import { useState, useEffect } from 'react';
@@ -9,7 +9,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import io from "socket.io-client";
 import queryString from "query-string";
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Message from '../components/Message';
 let socket;
 
