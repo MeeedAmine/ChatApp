@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function Chat() {
-    const END_POINT = "http://localhost:5000/";
+    const END_POINT = "https://chatappam.herokuapp.com/api";
     const location = useLocation();
     const [username, setUsername] = useState("");
     const [room, setRoom] = useState("");
