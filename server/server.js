@@ -6,6 +6,7 @@ const router = require("./router");
 const formatMessage = require('./utils/messages');
 const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users');
 
+const PORT = 5000;
 
 
 const app = express();
@@ -67,4 +68,4 @@ io.on('connection', socket => {
         
     });
 });
-server.listen(process.env.PORT, ()=> console.log('Server runnig on port 5000'));
+server.listen(process.env.PORT || PORT, ()=> console.log('Server runnig on port 5000'));
